@@ -22,6 +22,11 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
     testImplementation("org.junit.jupiter:junit-jupiter-params:$junitVersion")
 
+    // Kotest
+    val kotestVersion = "5.8.+"
+    testImplementation("io.kotest:kotest-assertions-core:$kotestVersion")
+    testImplementation("io.kotest:kotest-runner-junit5:$kotestVersion")
+
     // mockk
     testImplementation("io.mockk:mockk:1.13.+")
 

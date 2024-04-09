@@ -1,11 +1,10 @@
-package liftpasspricing.application
+package dojo.liftpasspricing.application
 
-import dojo.liftpasspricing.application.CostCalculator
 import dojo.liftpasspricing.domain.BasePriceRepository
 import dojo.liftpasspricing.domain.HolidaysRepository
+import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk
-import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
@@ -22,7 +21,7 @@ class CostCalculatorShould {
 
         val cost = costCalculator.calculateFor(type, age, priceDateRequested)
 
-        assertEquals(expectedCost, cost)
+        cost shouldBe expectedCost
     }
 
     @BeforeEach

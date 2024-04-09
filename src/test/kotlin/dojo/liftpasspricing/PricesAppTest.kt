@@ -1,15 +1,15 @@
-package liftpasspricing
+package dojo.liftpasspricing
 
 import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import dojo.liftpasspricing.PricesApp
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldBeEmpty
 import io.restassured.RestAssured
 import io.restassured.http.ContentType
 import org.apache.http.HttpStatus
 import org.junit.jupiter.api.AfterAll
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
@@ -67,7 +67,9 @@ class PricesAppTest {
                     .contentType(ContentType.JSON)
                 .extract().jsonPath()
 
-        assertEquals(expectedCost, response.getInt("cost"))
+        val cost = response.getInt("cost")
+
+        cost shouldBe expectedCost
     }
 
     @Test
@@ -88,7 +90,7 @@ class PricesAppTest {
                 .extract().response()
                 .asString()
 
-        assertTrue(response.isBlank())
+        response.shouldBeEmpty()
     }
 
     private fun mapFrom(params: String): Map<String, Any?> {
