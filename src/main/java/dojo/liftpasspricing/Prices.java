@@ -43,79 +43,74 @@ public class Prices {
             final Integer age = req.queryParams("age") != null ? Integer.valueOf(req.queryParams("age")) : null;
             final String forfaitType = req.queryParams("type");
             final String priceDateRequested = req.queryParams("date");
+
+            final int basePrice = retrieveBasePrice(connection, forfaitType);
+
             int calculatedCost;
 
-            try (PreparedStatement costStmt = connection.prepareStatement("SELECT cost FROM base_price WHERE type = ?")) {
-                costStmt.setString(1, forfaitType);
-                try (ResultSet result = costStmt.executeQuery()) {
-                    result.next();
-                    final int basePrice = result.getInt("cost");
+            int reduction;
+            boolean isHoliday = false;
 
-                    int reduction;
-                    boolean isHoliday = false;
+            if (age != null && age < 6) {
+                calculatedCost = 0;
+            } else {
+                reduction = 0;
 
-                    if (age != null && age < 6) {
-                        calculatedCost = 0;
+                if (!forfaitType.equals("night")) {
+                    DateFormat isoFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+                    try (PreparedStatement holidayStmt = connection.prepareStatement("SELECT * FROM holidays")) {
+                        try (ResultSet holidays = holidayStmt.executeQuery()) {
+
+                            while (holidays.next()) {
+                                Date holiday = holidays.getDate("holiday");
+                                if (priceDateRequested != null) {
+                                    Date d = isoFormat.parse(priceDateRequested);
+                                    if (d.getYear() == holiday.getYear() && //
+                                            d.getMonth() == holiday.getMonth() && //
+                                            d.getDate() == holiday.getDate()) {
+                                        isHoliday = true;
+                                    }
+                                }
+                            }
+
+                        }
+                    }
+
+                    if (priceDateRequested != null) {
+                        Calendar calendar = Calendar.getInstance();
+                        calendar.setTime(isoFormat.parse(priceDateRequested));
+                        if (!isHoliday && calendar.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY) {
+                            reduction = 35;
+                        }
+                    }
+
+                    // TODO apply reduction for others
+                    if (age != null && age < 15) {
+                        calculatedCost =  (int) Math.ceil(basePrice * .7);
                     } else {
-                        reduction = 0;
-
-                        if (!forfaitType.equals("night")) {
-                            DateFormat isoFormat = new SimpleDateFormat("yyyy-MM-dd");
-
-                            try (PreparedStatement holidayStmt = connection.prepareStatement("SELECT * FROM holidays")) {
-                                try (ResultSet holidays = holidayStmt.executeQuery()) {
-
-                                    while (holidays.next()) {
-                                        Date holiday = holidays.getDate("holiday");
-                                        if (priceDateRequested != null) {
-                                            Date d = isoFormat.parse(priceDateRequested);
-                                            if (d.getYear() == holiday.getYear() && //
-                                                    d.getMonth() == holiday.getMonth() && //
-                                                    d.getDate() == holiday.getDate()) {
-                                                isHoliday = true;
-                                            }
-                                        }
-                                    }
-
-                                }
-                            }
-
-                            if (priceDateRequested != null) {
-                                Calendar calendar = Calendar.getInstance();
-                                calendar.setTime(isoFormat.parse(priceDateRequested));
-                                if (!isHoliday && calendar.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY) {
-                                    reduction = 35;
-                                }
-                            }
-
-                            // TODO apply reduction for others
-                            if (age != null && age < 15) {
-                                calculatedCost =  (int) Math.ceil(basePrice * .7);
-                            } else {
-                                if (age == null) {
-                                    double cost = basePrice * (1 - reduction / 100.0);
-                                    calculatedCost = (int) Math.ceil(cost);
-                                } else {
-                                    if (age > 64) {
-                                        double cost = basePrice * .75 * (1 - reduction / 100.0);
-                                        calculatedCost = (int) Math.ceil(cost);
-                                    } else {
-                                        double cost = basePrice * (1 - reduction / 100.0);
-                                        calculatedCost = (int) Math.ceil(cost);
-                                    }
-                                }
-                            }
+                        if (age == null) {
+                            double cost = basePrice * (1 - reduction / 100.0);
+                            calculatedCost = (int) Math.ceil(cost);
                         } else {
-                            if (age != null && age >= 6) {
-                                if (age > 64) {
-                                    calculatedCost = (int) Math.ceil(basePrice * .4);
-                                } else {
-                                    calculatedCost = basePrice;
-                                }
+                            if (age > 64) {
+                                double cost = basePrice * .75 * (1 - reduction / 100.0);
+                                calculatedCost = (int) Math.ceil(cost);
                             } else {
-                                calculatedCost = 0;
+                                double cost = basePrice * (1 - reduction / 100.0);
+                                calculatedCost = (int) Math.ceil(cost);
                             }
                         }
+                    }
+                } else {
+                    if (age != null && age >= 6) {
+                        if (age > 64) {
+                            calculatedCost = (int) Math.ceil(basePrice * .4);
+                        } else {
+                            calculatedCost = basePrice;
+                        }
+                    } else {
+                        calculatedCost = 0;
                     }
                 }
             }
@@ -127,6 +122,18 @@ public class Prices {
         });
 
         return connection;
+    }
+
+    private static int retrieveBasePrice(final Connection connection, final String forfaitType) throws SQLException {
+        int cost;
+        try (PreparedStatement costStmt = connection.prepareStatement("SELECT cost FROM base_price WHERE type = ?")) {
+            costStmt.setString(1, forfaitType);
+            try (ResultSet result = costStmt.executeQuery()) {
+                result.next();
+                cost = result.getInt("cost");
+            }
+        }
+        return cost;
     }
 
 }
