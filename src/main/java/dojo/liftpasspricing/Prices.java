@@ -12,10 +12,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
+import java.util.*;
 
 public class Prices {
+
+    private static final DateFormat ISO_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 
     public static Connection createApp() throws SQLException {
 
@@ -42,14 +43,16 @@ public class Prices {
         get("/prices", (req, res) -> {
             final Integer age = req.queryParams("age") != null ? Integer.valueOf(req.queryParams("age")) : null;
             final String forfaitType = req.queryParams("type");
-            final String priceDateRequested = req.queryParams("date");
+            final String priceDateRequestedString = req.queryParams("date");
+            final Date priceDateRequested = (priceDateRequestedString != null) ?
+                    ISO_DATE_FORMAT.parse(priceDateRequestedString) :
+                    null;
 
             final int basePrice = retrieveBasePrice(connection, forfaitType);
+            final List<Date> holidays = retrieveHolidays(connection);
 
             int calculatedCost;
-
             int reduction;
-            boolean isHoliday = false;
 
             if (age != null && age < 6) {
                 calculatedCost = 0;
@@ -57,29 +60,21 @@ public class Prices {
                 reduction = 0;
 
                 if (!forfaitType.equals("night")) {
-                    DateFormat isoFormat = new SimpleDateFormat("yyyy-MM-dd");
+                    boolean isHoliday = false;
 
-                    try (PreparedStatement holidayStmt = connection.prepareStatement("SELECT * FROM holidays")) {
-                        try (ResultSet holidays = holidayStmt.executeQuery()) {
-
-                            while (holidays.next()) {
-                                Date holiday = holidays.getDate("holiday");
-                                if (priceDateRequested != null) {
-                                    Date d = isoFormat.parse(priceDateRequested);
-                                    if (d.getYear() == holiday.getYear() && //
-                                            d.getMonth() == holiday.getMonth() && //
-                                            d.getDate() == holiday.getDate()) {
-                                        isHoliday = true;
-                                    }
-                                }
+                    for (Date holiday : holidays) {
+                        if (priceDateRequested != null) {
+                            if (priceDateRequested.getYear() == holiday.getYear() && //
+                                    priceDateRequested.getMonth() == holiday.getMonth() && //
+                                    priceDateRequested.getDate() == holiday.getDate()) {
+                                isHoliday = true;
                             }
-
                         }
                     }
 
                     if (priceDateRequested != null) {
                         Calendar calendar = Calendar.getInstance();
-                        calendar.setTime(isoFormat.parse(priceDateRequested));
+                        calendar.setTime(priceDateRequested);
                         if (!isHoliday && calendar.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY) {
                             reduction = 35;
                         }
@@ -136,4 +131,17 @@ public class Prices {
         return cost;
     }
 
+    private static List<Date> retrieveHolidays(final Connection connection) throws SQLException {
+        List<Date> holidays = new ArrayList<>();
+        try (PreparedStatement holidayStmt = connection.prepareStatement("SELECT * FROM holidays")) {
+            try (ResultSet holidaysResultSet = holidayStmt.executeQuery()) {
+
+                while (holidaysResultSet.next()) {
+                    Date holiday = holidaysResultSet.getDate("holiday");
+                    holidays.add(holiday);
+                }
+            }
+        }
+        return holidays;
+    }
 }
