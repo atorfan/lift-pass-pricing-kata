@@ -20,7 +20,6 @@ import org.testcontainers.junit.jupiter.Container
 import org.testcontainers.junit.jupiter.Testcontainers
 import spark.Spark
 import java.io.File
-import java.sql.Connection
 import java.sql.SQLException
 
 @Testcontainers
@@ -94,7 +93,7 @@ class PricesTest {
 
     private fun mapFrom(params: String): Map<String, Any?> {
         val objectMapper = jacksonObjectMapper()
-        objectMapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
+        objectMapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true)
         return objectMapper.readValue<Map<String, Any>>(params)
     }
 
@@ -105,13 +104,11 @@ class PricesTest {
             .waitingFor("db-1", Wait.forHealthcheck())
             .withLocalCompose(true)
 
-        private var connection: Connection? = null
-
         @JvmStatic
         @BeforeAll
         @Throws(SQLException::class)
         fun createPrices() {
-            connection = Prices.createApp()
+            Prices.createApp()
         }
 
         @JvmStatic
@@ -119,7 +116,6 @@ class PricesTest {
         @Throws(SQLException::class)
         fun stopApplication() {
             Spark.stop()
-            connection!!.close()
         }
     }
 }

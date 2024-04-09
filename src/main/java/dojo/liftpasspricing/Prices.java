@@ -1,21 +1,16 @@
 package dojo.liftpasspricing;
 
-import static dojo.liftpasspricing.infrastructure.ApiRoutesKt.getPrices;
-import static spark.Spark.after;
-import static spark.Spark.get;
-import static spark.Spark.port;
-import static spark.Spark.put;
+import dojo.liftpasspricing.infrastructure.DatabaseConnectionFactoryKt;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
+
+import static dojo.liftpasspricing.infrastructure.ApiRoutesKt.getPrices;
+import static spark.Spark.*;
 
 public class Prices {
 
-    public static Connection createApp() throws SQLException {
-
-        final Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/lift_pass", "root", "mysql");
+    public static void createApp() {
 
         port(4567);
 
@@ -23,9 +18,11 @@ public class Prices {
             int liftPassCost = Integer.parseInt(req.queryParams("cost"));
             String liftPassType = req.queryParams("type");
 
-            try (PreparedStatement stmt = connection.prepareStatement( //
-                    "INSERT INTO base_price (type, cost) VALUES (?, ?) " + //
-                            "ON DUPLICATE KEY UPDATE cost = ?")) {
+            try (Connection connection = DatabaseConnectionFactoryKt.obtainDatabaseConnection();
+                 PreparedStatement stmt = connection.prepareStatement(
+                         "INSERT INTO base_price (type, cost) VALUES (?, ?) ON DUPLICATE KEY UPDATE cost = ?"
+                 )
+            ) {
                 stmt.setString(1, liftPassType);
                 stmt.setInt(2, liftPassCost);
                 stmt.setInt(3, liftPassCost);
@@ -37,10 +34,6 @@ public class Prices {
 
         get("/prices", getPrices());
 
-        after((req, res) -> {
-            res.type("application/json");
-        });
-
-        return connection;
+        after((req, res) -> res.type("application/json"));
     }
 }

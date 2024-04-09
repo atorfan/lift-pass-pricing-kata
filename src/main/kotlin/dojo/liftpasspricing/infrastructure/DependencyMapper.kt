@@ -3,18 +3,13 @@ package dojo.liftpasspricing.infrastructure
 import dojo.liftpasspricing.application.CostCalculator
 import dojo.liftpasspricing.domain.BasePriceRepository
 import dojo.liftpasspricing.domain.HolidaysRepository
-import java.sql.DriverManager
 import kotlin.reflect.KClass
 
 private val dependencies = buildMap {
-    // TODO use a connection pool solution
-    // TODO user & password from environment variables
-    val databaseConnection = DriverManager.getConnection("jdbc:mysql://localhost:3306/lift_pass", "root", "mysql")
-
-    val basePriceRepository = BasePriceRepositoryWithSqlDatabase(databaseConnection)
+    val basePriceRepository = BasePriceRepositoryWithSqlDatabase()
     put(BasePriceRepository::class, basePriceRepository)
 
-    val holidaysRepository = HolidaysRepositoryWithSqlDatabase(databaseConnection)
+    val holidaysRepository = HolidaysRepositoryWithSqlDatabase()
     put(HolidaysRepository::class, holidaysRepository)
 
     put(CostCalculator::class, CostCalculator(basePriceRepository, holidaysRepository))
