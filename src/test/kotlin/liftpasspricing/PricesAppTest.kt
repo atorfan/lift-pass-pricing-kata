@@ -3,7 +3,7 @@ package liftpasspricing
 import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-import dojo.liftpasspricing.Prices
+import dojo.liftpasspricing.PricesApp
 import io.restassured.RestAssured
 import io.restassured.http.ContentType
 import org.apache.http.HttpStatus
@@ -23,7 +23,7 @@ import java.io.File
 import java.sql.SQLException
 
 @Testcontainers
-class PricesTest {
+class PricesAppTest {
 
     @ParameterizedTest
     @CsvSource(
@@ -108,7 +108,7 @@ class PricesTest {
         @BeforeAll
         @Throws(SQLException::class)
         fun createPrices() {
-            Prices.createApp()
+            PricesApp.create()
         }
 
         @JvmStatic
