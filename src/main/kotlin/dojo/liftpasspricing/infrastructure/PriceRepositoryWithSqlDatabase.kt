@@ -18,4 +18,16 @@ class BasePriceRepositoryWithSqlDatabase : BasePriceRepository {
         }
         return basePrice
     }
+
+    override fun storeFor(liftPassType: String, liftPassCost: Int) {
+        obtainDatabaseConnection().use {
+            it.prepareStatement("INSERT INTO base_price (type, cost) VALUES (?, ?) ON DUPLICATE KEY UPDATE cost = ?")
+            .use { stmt ->
+                stmt.setString(1, liftPassType)
+                stmt.setInt(2, liftPassCost)
+                stmt.setInt(3, liftPassCost)
+                stmt.execute()
+            }
+        }
+    }
 }
