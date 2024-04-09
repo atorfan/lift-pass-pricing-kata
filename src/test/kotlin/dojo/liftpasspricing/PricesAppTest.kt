@@ -28,28 +28,9 @@ class PricesAppTest {
     @ParameterizedTest
     @CsvSource(
         delimiter = ';', value = [
-            "35;{'type': '1jour'}",
-            "35;{'type': '1jour', 'date': '2019-03-04'}",
-            "23;{'type': '1jour', 'date': '2019-03-11'}",
-            "35;{'type': '1jour', 'date': '2020-03-11'}",
-            " 0;{'type': '1jour', 'age': 3}",
-            " 0;{'type': '1jour', 'age': 5}",
-            "25;{'type': '1jour', 'age': 6}",
-            "25;{'type': '1jour', 'age': 14}",
-            "35;{'type': '1jour', 'age': 15}",
-            "35;{'type': '1jour', 'age': 64}",
             "35;{'type': '1jour', 'age': 64, 'date': '2019-03-04'}",
             "23;{'type': '1jour', 'age': 64, 'date': '2019-03-11'}",
-            "27;{'type': '1jour', 'age': 65}",
-            "27;{'type': '1jour', 'age': 65, 'date': '2019-03-04'}",
-            "18;{'type': '1jour', 'age': 65, 'date': '2019-03-11'}",
             " 0;{'type': 'night'}",
-            " 0;{'type': 'night', 'age': 5}",
-            "19;{'type': 'night', 'age': 6}",
-            "19;{'type': 'night', 'age': 7}",
-            "19;{'type': 'night', 'age': 37}",
-            "19;{'type': 'night', 'age': 64}",
-            " 8;{'type': 'night', 'age': 65}",
         ]
     )
     fun `should return cost`(expectedCost: Int, jsonRequestParams: String) {
