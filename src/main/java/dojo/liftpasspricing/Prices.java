@@ -41,33 +41,34 @@ public class Prices {
 
         get("/prices", (req, res) -> {
             final Integer age = req.queryParams("age") != null ? Integer.valueOf(req.queryParams("age")) : null;
+            final String forfaitType = req.queryParams("type");
+            final String priceDateRequested = req.queryParams("date");
+            int calculatedCost;
 
-            try (PreparedStatement costStmt = connection.prepareStatement( //
-                    "SELECT cost FROM base_price " + //
-                            "WHERE type = ?")) {
-                costStmt.setString(1, req.queryParams("type"));
+            try (PreparedStatement costStmt = connection.prepareStatement("SELECT cost FROM base_price WHERE type = ?")) {
+                costStmt.setString(1, forfaitType);
                 try (ResultSet result = costStmt.executeQuery()) {
                     result.next();
+                    final int basePrice = result.getInt("cost");
 
                     int reduction;
                     boolean isHoliday = false;
 
                     if (age != null && age < 6) {
-                        return "{ \"cost\": 0}";
+                        calculatedCost = 0;
                     } else {
                         reduction = 0;
 
-                        if (!req.queryParams("type").equals("night")) {
+                        if (!forfaitType.equals("night")) {
                             DateFormat isoFormat = new SimpleDateFormat("yyyy-MM-dd");
 
-                            try (PreparedStatement holidayStmt = connection.prepareStatement( //
-                                    "SELECT * FROM holidays")) {
+                            try (PreparedStatement holidayStmt = connection.prepareStatement("SELECT * FROM holidays")) {
                                 try (ResultSet holidays = holidayStmt.executeQuery()) {
 
                                     while (holidays.next()) {
                                         Date holiday = holidays.getDate("holiday");
-                                        if (req.queryParams("date") != null) {
-                                            Date d = isoFormat.parse(req.queryParams("date"));
+                                        if (priceDateRequested != null) {
+                                            Date d = isoFormat.parse(priceDateRequested);
                                             if (d.getYear() == holiday.getYear() && //
                                                     d.getMonth() == holiday.getMonth() && //
                                                     d.getDate() == holiday.getDate()) {
@@ -79,45 +80,46 @@ public class Prices {
                                 }
                             }
 
-                            if (req.queryParams("date") != null) {
+                            if (priceDateRequested != null) {
                                 Calendar calendar = Calendar.getInstance();
-                                calendar.setTime(isoFormat.parse(req.queryParams("date")));
-                                if (!isHoliday && calendar.get(Calendar.DAY_OF_WEEK) == 2) {
+                                calendar.setTime(isoFormat.parse(priceDateRequested));
+                                if (!isHoliday && calendar.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY) {
                                     reduction = 35;
                                 }
                             }
 
                             // TODO apply reduction for others
                             if (age != null && age < 15) {
-                                return "{ \"cost\": " + (int) Math.ceil(result.getInt("cost") * .7) + "}";
+                                calculatedCost =  (int) Math.ceil(basePrice * .7);
                             } else {
                                 if (age == null) {
-                                    double cost = result.getInt("cost") * (1 - reduction / 100.0);
-                                    return "{ \"cost\": " + (int) Math.ceil(cost) + "}";
+                                    double cost = basePrice * (1 - reduction / 100.0);
+                                    calculatedCost = (int) Math.ceil(cost);
                                 } else {
                                     if (age > 64) {
-                                        double cost = result.getInt("cost") * .75 * (1 - reduction / 100.0);
-                                        return "{ \"cost\": " + (int) Math.ceil(cost) + "}";
+                                        double cost = basePrice * .75 * (1 - reduction / 100.0);
+                                        calculatedCost = (int) Math.ceil(cost);
                                     } else {
-                                        double cost = result.getInt("cost") * (1 - reduction / 100.0);
-                                        return "{ \"cost\": " + (int) Math.ceil(cost) + "}";
+                                        double cost = basePrice * (1 - reduction / 100.0);
+                                        calculatedCost = (int) Math.ceil(cost);
                                     }
                                 }
                             }
                         } else {
                             if (age != null && age >= 6) {
                                 if (age > 64) {
-                                    return "{ \"cost\": " + (int) Math.ceil(result.getInt("cost") * .4) + "}";
+                                    calculatedCost = (int) Math.ceil(basePrice * .4);
                                 } else {
-                                    return "{ \"cost\": " + result.getInt("cost") + "}";
+                                    calculatedCost = basePrice;
                                 }
                             } else {
-                                return "{ \"cost\": 0}";
+                                calculatedCost = 0;
                             }
                         }
                     }
                 }
             }
+            return "{ \"cost\": " + calculatedCost + "}";
         });
 
         after((req, res) -> {
