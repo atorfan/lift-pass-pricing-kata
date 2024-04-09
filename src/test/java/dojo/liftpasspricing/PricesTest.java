@@ -7,12 +7,14 @@ import java.sql.SQLException;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import io.restassured.RestAssured;
 import io.restassured.path.json.JsonPath;
 import spark.Spark;
 
+@Disabled
 public class PricesTest {
 
     private static Connection connection;

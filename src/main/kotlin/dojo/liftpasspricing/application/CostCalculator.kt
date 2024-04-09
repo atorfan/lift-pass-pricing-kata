@@ -1,16 +1,20 @@
-package dojo.liftpasspricing.domain
+package dojo.liftpasspricing.application
 
+import dojo.liftpasspricing.domain.BasePriceRepository
+import dojo.liftpasspricing.domain.HolidaysRepository
 import java.time.DayOfWeek
 import java.time.LocalDate
 import kotlin.math.ceil
 
-class CostCalculator(private val basePrice: Int, private val holidaysRepository: HolidaysRepository) {
+class CostCalculator(private val basePriceRepository: BasePriceRepository, private val holidaysRepository: HolidaysRepository) {
 
     fun calculateFor(
         forfaitType: String,
         age: Int?,
         priceDateRequested: LocalDate?
     ): Int {
+        val basePrice = basePriceRepository.retrieveFor(forfaitType)
+
         val calculatedCost: Int
         var reduction: Int
 
