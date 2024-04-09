@@ -14,10 +14,16 @@ import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
+import org.testcontainers.containers.ComposeContainer
+import org.testcontainers.containers.wait.strategy.Wait
+import org.testcontainers.junit.jupiter.Container
+import org.testcontainers.junit.jupiter.Testcontainers
 import spark.Spark
+import java.io.File
 import java.sql.Connection
 import java.sql.SQLException
 
+@Testcontainers
 class PricesTest {
 
     @ParameterizedTest
@@ -93,6 +99,12 @@ class PricesTest {
     }
 
     companion object {
+        @Container
+        @SuppressWarnings("unused")
+        val environment = ComposeContainer(File("./docker/docker-compose.yml"))
+            .waitingFor("db-1", Wait.forHealthcheck())
+            .withLocalCompose(true)
+
         private var connection: Connection? = null
 
         @JvmStatic

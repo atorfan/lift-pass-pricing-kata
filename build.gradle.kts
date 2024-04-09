@@ -30,6 +30,11 @@ dependencies {
     testImplementation("com.fasterxml.jackson.core:jackson-core:$jacksonVersion")
     testImplementation("com.fasterxml.jackson.core:jackson-databind:$jacksonVersion")
     testImplementation("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion")
+
+    // Testcontainers
+    val testContainersVersion = "1.19.+"
+    testImplementation("org.testcontainers:testcontainers:$testContainersVersion")
+    testImplementation("org.testcontainers:junit-jupiter:$testContainersVersion")
 }
 
 tasks.withType<Test> {
