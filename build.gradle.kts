@@ -22,6 +22,9 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
     testImplementation("org.junit.jupiter:junit-jupiter-params:$junitVersion")
 
+    // mockk
+    testImplementation("io.mockk:mockk:1.13.+")
+
     // Rest-Assured
     testImplementation("io.rest-assured:rest-assured:3.3.+")
     // dependencies needed by Rest-Assured

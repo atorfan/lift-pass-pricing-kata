@@ -1,6 +1,8 @@
 package dojo.liftpasspricing;
 
 import dojo.liftpasspricing.domain.CostCalculator;
+import dojo.liftpasspricing.domain.HolidaysRepository;
+import dojo.liftpasspricing.infrastructure.HolidaysRepositoryWithSqlDatabase;
 
 import static spark.Spark.after;
 import static spark.Spark.get;
@@ -53,8 +55,8 @@ public class Prices {
                     null;
 
             final int basePrice = retrieveBasePrice(connection, forfaitType);
-            final List<LocalDate> holidays = retrieveHolidays(connection);
-            CostCalculator costCalculator = new CostCalculator(basePrice, holidays);
+            final HolidaysRepository holidaysRepository = new HolidaysRepositoryWithSqlDatabase(connection);
+            CostCalculator costCalculator = new CostCalculator(basePrice, holidaysRepository);
             int calculatedCost = costCalculator.calculateFor(forfaitType, age, priceDateRequested);
 
             return "{ \"cost\": " + calculatedCost + "}";

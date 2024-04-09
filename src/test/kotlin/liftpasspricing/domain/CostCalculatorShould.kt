@@ -1,6 +1,9 @@
 package liftpasspricing.domain
 
 import dojo.liftpasspricing.domain.CostCalculator
+import dojo.liftpasspricing.domain.HolidaysRepository
+import io.mockk.every
+import io.mockk.mockk
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.params.ParameterizedTest
@@ -16,7 +19,7 @@ class CostCalculatorShould {
     fun `return cost`(basePrice: Int, expectedCost: Int, type: String, age: Int?, date: String?) {
         val priceDateRequested = if (date != null) LocalDate.parse(date) else null
 
-        val costCalculator = CostCalculator(basePrice, holidays)
+        val costCalculator = CostCalculator(basePrice, holidaysRepository)
         val cost = costCalculator.calculateFor(type, age, priceDateRequested)
 
         assertEquals(expectedCost, cost)
@@ -24,15 +27,18 @@ class CostCalculatorShould {
 
     @BeforeEach
     fun setup() {
-        holidays =
-            listOf(
-                LocalDate.of(2019, 2, 18),
-                LocalDate.of(2019, 2, 25),
-                LocalDate.of(2019, 3, 4),
+        holidaysRepository = mockk<HolidaysRepository>()
+        every { holidaysRepository.retrieve() }
+            .returns(
+                listOf(
+                    LocalDate.of(2019, 2, 18),
+                    LocalDate.of(2019, 2, 25),
+                    LocalDate.of(2019, 3, 4),
+                )
             )
     }
 
-    private lateinit var holidays: List<LocalDate>
+    private lateinit var holidaysRepository: HolidaysRepository
 
     companion object {
         private const val BASE_COST_FOR_1JOUR = 35

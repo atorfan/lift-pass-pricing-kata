@@ -4,7 +4,7 @@ import java.time.DayOfWeek
 import java.time.LocalDate
 import kotlin.math.ceil
 
-class CostCalculator(private val basePrice: Int, private val holidays: List<LocalDate>) {
+class CostCalculator(private val basePrice: Int, private val holidaysRepository: HolidaysRepository) {
 
     fun calculateFor(
         forfaitType: String,
@@ -22,7 +22,7 @@ class CostCalculator(private val basePrice: Int, private val holidays: List<Loca
             if (forfaitType != "night") {
                 var isHoliday = false
 
-                for (holiday in holidays) {
+                for (holiday in holidaysRepository.retrieve()) {
                     if (priceDateRequested != null) {
                         if (priceDateRequested.year == holiday.year
                             && priceDateRequested.month == holiday.month
