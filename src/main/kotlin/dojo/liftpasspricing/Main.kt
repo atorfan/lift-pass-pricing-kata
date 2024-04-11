@@ -1,9 +1,7 @@
 package dojo.liftpasspricing
 
-import dojo.liftpasspricing.PricesApp.create
-
 fun main(args: Array<String>) {
-    create()
+    PricesApp.start()
 
     println(
         """

@@ -3,7 +3,6 @@ package dojo.liftpasspricing
 import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-import dojo.liftpasspricing.PricesApp
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldBeEmpty
 import io.restassured.RestAssured
@@ -18,7 +17,6 @@ import org.testcontainers.containers.ComposeContainer
 import org.testcontainers.containers.wait.strategy.Wait
 import org.testcontainers.junit.jupiter.Container
 import org.testcontainers.junit.jupiter.Testcontainers
-import spark.Spark
 import java.io.File
 import java.sql.SQLException
 
@@ -91,14 +89,14 @@ class PricesAppTest {
         @BeforeAll
         @Throws(SQLException::class)
         fun createPrices() {
-            PricesApp.create()
+            PricesApp.start()
         }
 
         @JvmStatic
         @AfterAll
         @Throws(SQLException::class)
         fun stopApplication() {
-            Spark.stop()
+            PricesApp.shutdown()
         }
     }
 }

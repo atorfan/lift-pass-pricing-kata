@@ -9,13 +9,19 @@ repositories {
 
 dependencies {
     // Spark web framework
-    implementation("com.sparkjava:spark-core:2.7.+")
+    implementation("com.sparkjava:spark-core:2.9.+")
+    val jettyVersion = "9.4.48.+"
+    implementation("org.eclipse.jetty:jetty-server:$jettyVersion")
+    implementation("org.eclipse.jetty:jetty-webapp:$jettyVersion")
+    implementation("org.eclipse.jetty:jetty-http:$jettyVersion")
+    implementation("org.eclipse.jetty:jetty-util:$jettyVersion")
+    implementation("org.eclipse.jetty:jetty-xml:$jettyVersion")
 
     // Logger
-    implementation("org.slf4j:slf4j-simple:1.7.+")
+    implementation("org.slf4j:slf4j-simple:2.0.+")
 
     // MySQL connector
-    runtimeOnly("mysql:mysql-connector-java:8.0.+")
+    runtimeOnly("com.mysql:mysql-connector-j:8.3.+")
 
     // Junit 5
     val junitVersion = "5.+"
@@ -31,10 +37,10 @@ dependencies {
     testImplementation("io.mockk:mockk:1.13.+")
 
     // Rest-Assured
-    testImplementation("io.rest-assured:rest-assured:3.3.+")
+    testImplementation("io.rest-assured:rest-assured:5.4.+")
     // dependencies needed by Rest-Assured
     testImplementation("org.slf4j:jcl-over-slf4j:1.7.+")
-    val jacksonVersion = "2.11.+"
+    val jacksonVersion = "2.17.+"
     testImplementation("com.fasterxml.jackson.core:jackson-core:$jacksonVersion")
     testImplementation("com.fasterxml.jackson.core:jackson-databind:$jacksonVersion")
     testImplementation("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion")
@@ -43,6 +49,7 @@ dependencies {
     val testContainersVersion = "1.19.+"
     testImplementation("org.testcontainers:testcontainers:$testContainersVersion")
     testImplementation("org.testcontainers:junit-jupiter:$testContainersVersion")
+    testImplementation("org.apache.commons:commons-compress:1.26.+")
 }
 
 tasks.withType<Test> {

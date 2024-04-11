@@ -5,17 +5,20 @@ import dojo.liftpasspricing.infrastructure.putBasePriceRoute
 import spark.Filter
 import spark.Request
 import spark.Response
-import spark.Spark
+import spark.Spark.*
 
 object PricesApp {
 
-    @JvmStatic
-    fun create() {
-        Spark.port(4567)
+    fun start() {
+        port(4567)
 
-        Spark.get("/prices", getPriceRoute())
-        Spark.put("/prices", putBasePriceRoute())
+        get("/prices", getPriceRoute())
+        put("/prices", putBasePriceRoute())
 
-        Spark.after(Filter { _: Request?, res: Response -> res.type("application/json") })
+        after(Filter { _: Request?, res: Response -> res.type("application/json") })
+    }
+
+    fun shutdown() {
+        stop()
     }
 }
