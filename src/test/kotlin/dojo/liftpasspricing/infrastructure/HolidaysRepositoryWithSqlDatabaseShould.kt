@@ -1,6 +1,8 @@
 package dojo.liftpasspricing.infrastructure
 
+import dojo.liftpasspricing.domain.Holidays
 import io.kotest.matchers.collections.shouldContainAll
+import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.Test
 import org.testcontainers.containers.ComposeContainer
 import org.testcontainers.containers.wait.strategy.Wait
@@ -26,7 +28,7 @@ class HolidaysRepositoryWithSqlDatabaseShould {
 
         val saved = HolidaysRepositoryWithSqlDatabase().retrieve()
 
-        saved shouldContainAll expected
+        saved shouldBe Holidays(expected)
     }
 
     private fun upsert(expected: List<LocalDate>) =
