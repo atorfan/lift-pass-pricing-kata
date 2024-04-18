@@ -66,6 +66,7 @@ class CostCalculatorShould {
                 Arguments.of(0, "1jour", 5, null),
                 Arguments.of(25, "1jour", 6, null),
                 Arguments.of(25, "1jour", 14, null),
+                Arguments.of(25, "1jour", 14, "2019-03-11"),
                 Arguments.of(35, "1jour", 15, null),
                 Arguments.of(35, "1jour", 64, null),
                 Arguments.of(35, "1jour", 64, "2019-03-04"),
