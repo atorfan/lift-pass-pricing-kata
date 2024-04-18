@@ -2,20 +2,10 @@ package dojo.liftpasspricing.domain
 
 import java.time.DayOfWeek
 import java.time.LocalDate
-import kotlin.math.ceil
 
-class OneJourForfait(private val basePrice: Int, private val holidays: Holidays) : Forfait {
+class OneJourForfait(override val basePrice: Int, private val holidays: Holidays) : Forfait {
 
-    override fun costFor(age: Int?, priceDateRequested: LocalDate?): Int {
-        val bonusRule = loadBonusRules(priceDateRequested)
-            .filter { it.match(age) }
-            .map(BonusRule::toDiscounts)
-            .first()
-
-        return ceil(basePrice * (1 - bonusRule.ageDiscount / 100.0) * (1 - bonusRule.holidayDiscount / 100.0)).toInt()
-    }
-
-    private fun loadBonusRules(priceDateRequested: LocalDate?): List<BonusRule> {
+    override fun loadBonusRules(priceDateRequested: LocalDate?): List<BonusRule> {
         val holidayBonus = holidayBonus(priceDateRequested)
         return listOf(
             BonusRule(noAgeFilter(), holidayBonus, 0),
