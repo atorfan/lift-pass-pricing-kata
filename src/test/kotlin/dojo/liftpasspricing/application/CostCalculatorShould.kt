@@ -1,8 +1,8 @@
 package dojo.liftpasspricing.application
 
 import dojo.liftpasspricing.domain.BasePriceRepository
-import dojo.liftpasspricing.domain.Holidays
-import dojo.liftpasspricing.domain.HolidaysRepository
+import dojo.liftpasspricing.domain.LiftPassCalendar
+import dojo.liftpasspricing.domain.LiftPassCalendarRepository
 import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk
@@ -32,9 +32,9 @@ class CostCalculatorShould {
         costCalculator = CostCalculator(basePriceRepository, holidaysRepository)
     }
 
-    private fun mockHolidaysRepository() = mockk<HolidaysRepository>().also {
+    private fun mockHolidaysRepository() = mockk<LiftPassCalendarRepository>().also {
         every { it.retrieve() } returns
-                Holidays(
+                LiftPassCalendar(
                     listOf(
                         LocalDate.of(2019, 2, 18),
                         LocalDate.of(2019, 2, 25),

@@ -1,7 +1,6 @@
 package dojo.liftpasspricing.infrastructure
 
-import dojo.liftpasspricing.domain.Holidays
-import io.kotest.matchers.collections.shouldContainAll
+import dojo.liftpasspricing.domain.LiftPassCalendar
 import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.Test
 import org.testcontainers.containers.ComposeContainer
@@ -13,7 +12,7 @@ import java.sql.Date
 import java.time.LocalDate
 
 @Testcontainers
-class HolidaysRepositoryWithSqlDatabaseShould {
+class LiftPassCalendarRepositoryWithSqlDatabaseShould {
 
     @Test
     fun `return holidays from database`() {
@@ -26,9 +25,9 @@ class HolidaysRepositoryWithSqlDatabaseShould {
         )
         upsert(expected)
 
-        val saved = HolidaysRepositoryWithSqlDatabase().retrieve()
+        val saved = LiftPassCalendarRepositoryWithSqlDatabase().retrieve()
 
-        saved shouldBe Holidays(expected)
+        saved shouldBe LiftPassCalendar(expected)
     }
 
     private fun upsert(expected: List<LocalDate>) =

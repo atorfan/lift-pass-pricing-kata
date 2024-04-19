@@ -19,9 +19,9 @@ interface Forfait {
     fun loadBonusRules(priceDateRequested: LocalDate?): List<BonusRule>
 }
 
-fun getForfait(forfaitType: String, basePrice: Int, holidays: Holidays) =
+fun getForfait(calendar: LiftPassCalendar, forfaitType: String, basePrice: Int) =
     if (forfaitType == "night") {
         NightlyForfait(basePrice)
     } else {
-        OneJourForfait(basePrice, holidays)
+        OneJourForfait(calendar, basePrice)
     }

@@ -5,7 +5,7 @@ import java.time.LocalDate
 
 class CostCalculator(
     private val basePriceRepository: BasePriceRepository,
-    private val holidaysRepository: HolidaysRepository
+    private val liftPassCalendarRepository: LiftPassCalendarRepository
 ) {
     fun calculateFor(
         forfaitType: String,
@@ -13,9 +13,9 @@ class CostCalculator(
         priceDateRequested: LocalDate?
     ): Int {
         val basePrice = basePriceRepository.retrieveFor(forfaitType)
-        val holidays = holidaysRepository.retrieve()
+        val calendar = liftPassCalendarRepository.retrieve()
 
-        return getForfait(forfaitType, basePrice, holidays)
+        return getForfait(calendar, forfaitType, basePrice)
             .costFor(age, priceDateRequested)
     }
 }

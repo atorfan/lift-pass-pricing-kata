@@ -1,14 +1,14 @@
 package dojo.liftpasspricing.infrastructure
 
-import dojo.liftpasspricing.domain.Holidays
-import dojo.liftpasspricing.domain.HolidaysRepository
+import dojo.liftpasspricing.domain.LiftPassCalendar
+import dojo.liftpasspricing.domain.LiftPassCalendarRepository
 import java.time.Instant
 import java.time.ZoneId
 
-class HolidaysRepositoryWithSqlDatabase : HolidaysRepository {
+class LiftPassCalendarRepositoryWithSqlDatabase : LiftPassCalendarRepository {
 
     override fun retrieve() =
-        Holidays(
+        LiftPassCalendar(
             buildList {
                 queryFromDatabase("SELECT * FROM holidays")
                 { resultSet ->
