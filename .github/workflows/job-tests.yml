@@ -1,0 +1,35 @@
+on:
+  # Allows to call this job from another pipeline
+  workflow_call:
+
+env:
+  BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
+
+name: Testing pipeline
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup java version
+        uses: actions/setup-java@v4
+        with:
+          distribution: "temurin"
+          java-version: "17"
+
+      - name: Get seconds since epoch into an env variable
+        run: echo "SECONDS_SINCE_EPOCH=$(date +%s)" >> $GITHUB_ENV
+
+      - name: Remove slash from branch
+        run: echo "BRANCH_NO_SLASH=$(basename ${{ env.BRANCH_NAME }})" >> $GITHUB_ENV
+
+      - name: build
+        run: java --version && echo $JAVA_HOME && ./gradlew build -x test -Pversion=${{ env.BRANCH_NO_SLASH }}-${{ env.SECONDS_SINCE_EPOCH }}-${{github.run_number}}
+
+      - name: tests
+        run: ./gradlew test
