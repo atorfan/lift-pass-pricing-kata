@@ -10,15 +10,11 @@ import java.time.LocalDate
 fun getPriceRoute(): Route {
     return Route { req: Request, _: Response? ->
         val priceType = req.queryParams("type")
-        val age = req.queryParams("age")?.toInt()
-        val requestedDate =
-            if (req.queryParams("date") != null)
-                LocalDate.parse(req.queryParams("date"))
-            else
-                null
+        val ages = req.queryParamsValues("ages")?.map(String::toInt) ?: emptyList()
+        val requestedDate = req.queryParams("date")?.let {LocalDate.parse(it)}
 
         val costCalculator = dependency(CostCalculator::class)
-        val cost = costCalculator.calculateFor(priceType, age, requestedDate)
+        val cost = costCalculator.calculateFor(priceType, ages, requestedDate)
 
         "{ \"cost\": $cost }"
     }

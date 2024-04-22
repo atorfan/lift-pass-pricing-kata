@@ -26,8 +26,9 @@ class PricesAppTest {
     @ParameterizedTest
     @CsvSource(
         delimiter = ';', value = [
-            "35;{'type': '1jour', 'age': 64, 'date': '2019-03-04'}",
-            "23;{'type': '1jour', 'age': 64, 'date': '2019-03-11'}",
+            "35;{'type': '1jour', 'ages': [64], 'date': '2019-03-04'}",
+            "23;{'type': '1jour', 'ages': [64], 'date': '2019-03-11'}",
+            "70;{'type': '1jour', 'ages': [40, 64]}",
             " 0;{'type': 'night'}",
         ]
     )
@@ -72,7 +73,7 @@ class PricesAppTest {
         response.shouldBeEmpty()
     }
 
-    private fun mapFrom(params: String): Map<String, Any?> {
+    private fun mapFrom(params: String): Map<String, Any> {
         val objectMapper = jacksonObjectMapper()
         objectMapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true)
         return objectMapper.readValue<Map<String, Any>>(params)

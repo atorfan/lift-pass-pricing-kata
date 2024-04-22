@@ -9,13 +9,13 @@ class CostCalculator(
 ) {
     fun calculateFor(
         forfaitType: String,
-        age: Int?,
+        ages: List<Int>,
         priceDateRequested: LocalDate?
     ): Int {
         val basePrice = basePriceRepository.retrieveFor(forfaitType)
         val calendar = liftPassCalendarRepository.retrieve()
 
-        return getForfait(calendar, forfaitType, basePrice)
-            .costFor(age, priceDateRequested)
+        val forfait = getForfait(forfaitType, basePrice, calendar, priceDateRequested)
+        return forfait.costFor(ages)
     }
 }

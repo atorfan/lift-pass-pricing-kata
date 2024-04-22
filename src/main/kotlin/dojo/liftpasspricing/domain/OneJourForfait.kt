@@ -2,9 +2,13 @@ package dojo.liftpasspricing.domain
 
 import java.time.LocalDate
 
-class OneJourForfait(private val calendar: LiftPassCalendar, override val basePrice: Int) : Forfait {
+class OneJourForfait(
+    override val basePrice: Int,
+    private val calendar: LiftPassCalendar,
+    private val priceDateRequested: LocalDate?,
+) : Forfait {
 
-    override fun loadBonusRules(priceDateRequested: LocalDate?): List<BonusRule> {
+    override fun loadBonusRules(): List<BonusRule> {
         val holidayBonus = if (calendar.isWorkingMonday(priceDateRequested)) 35 else 0
         return listOf(
             BonusRule(noAgeFilter(), holidayBonus, 0),
