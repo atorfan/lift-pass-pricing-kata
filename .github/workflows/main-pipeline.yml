@@ -10,9 +10,10 @@ concurrency:
   cancel-in-progress: true
 
 permissions:
-  id-token: write
   contents: read
+  checks: write
 
 jobs:
   tests:
+    name: Main pipeline
     uses: ./.github/workflows/job-tests.yml

@@ -1,3 +1,5 @@
+https://gist.githubusercontent.com/{user}/{id}/raw/badge.svg
+
 # Lift Pass Pricing Kata
 
 You can find out more about this exercise in [this web page](https://www.exeal.com/katas/lift-pass-pricing-kata/).
