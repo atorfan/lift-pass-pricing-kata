@@ -10,7 +10,7 @@ repositories {
 dependencies {
     // Spark web framework
     implementation("com.sparkjava:spark-core:2.9.+")
-    val jettyVersion = "9.4.48.+"
+    val jettyVersion = "11.0.20.+"
     implementation("org.eclipse.jetty:jetty-server:$jettyVersion")
     implementation("org.eclipse.jetty:jetty-webapp:$jettyVersion")
     implementation("org.eclipse.jetty:jetty-http:$jettyVersion")
