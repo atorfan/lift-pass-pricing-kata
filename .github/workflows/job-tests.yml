@@ -10,7 +10,6 @@ jobs:
   tests:
     runs-on: ubuntu-latest
     permissions:
-      contents: write
       checks: write
     steps:
       - name: Checkout
@@ -79,6 +78,6 @@ jobs:
           github.event_name != 'workflow_run' && github.ref == 'refs/heads/main'
         uses: andymckay/append-gist-action@1fbfbbce708a39bd45846f0955ed5521f2099c6d
         with:
-          token: ${{ secrets.GIST_TOKEN }}
+          token: ${{ secrets.GIST_SAVER_TOKEN }}
           gistURL: https://gist.githubusercontent.com/${{github.actor}}/419918a15fff1a5ec74126888f73d4ae
           file: badge.svg

@@ -10,10 +10,10 @@ concurrency:
   cancel-in-progress: true
 
 permissions:
-  contents: write
   checks: write
 
 jobs:
   tests:
     name: Main pipeline
     uses: ./.github/workflows/job-tests.yml
+    secrets: inherit

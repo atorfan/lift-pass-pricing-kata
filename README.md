@@ -1,4 +1,4 @@
-https://gist.githubusercontent.com/{user}/{id}/raw/badge.svg
+[![Test Count](https://gist.githubusercontent.com/atorfan/419918a15fff1a5ec74126888f73d4ae/raw/badge.svg)](https://github.com/atorfan/lift-pass-pricing-kata/actions)
 
 # Lift Pass Pricing Kata
 
