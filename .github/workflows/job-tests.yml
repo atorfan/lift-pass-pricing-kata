@@ -1,6 +1,10 @@
 on:
   # Allows to call this job from another pipeline
   workflow_call:
+    # Map the workflow outputs to job outputs
+    outputs:
+      test-results:
+        value: ${{ jobs.tests.outputs.test-results }}
 
 env:
   BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
@@ -11,6 +15,8 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       checks: write
+    outputs:
+      test-results: ${{ steps.test-results.outputs.content }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -42,42 +48,16 @@ jobs:
             **/build/test-results/
 
       - name: Publish Test Results
-        id: test-results
+        id: publish-test-results
         uses: EnricoMi/publish-unit-test-result-action@v2
         if: always()
         with:
           junit_files: '**/test-results/**/*.xml'
 
-      - name: Set badge color
-        shell: bash
+      - name: Output test results
+        id: test-results
         run: |
-          case ${{ fromJSON( steps.test-results.outputs.json ).conclusion }} in
-            success)
-              echo "BADGE_COLOR=31c653" >> $GITHUB_ENV
-              ;;
-            failure)
-              echo "BADGE_COLOR=800000" >> $GITHUB_ENV
-              ;;
-            neutral)
-              echo "BADGE_COLOR=696969" >> $GITHUB_ENV
-              ;;
-          esac
-
-      - name: Create badge
-        uses: emibcn/badge-action@d6f51ff11b5c3382b3b88689ae2d6db22d9737d1
-        with:
-          label: Tests
-          status: '${{ fromJSON( steps.test-results.outputs.json ).formatted.stats.tests }} tests, ${{ fromJSON( steps.test-results.outputs.json ).formatted.stats.runs }} runs: ${{ fromJSON( steps.test-results.outputs.json ).conclusion }}'
-          color: ${{ env.BADGE_COLOR }}
-          path: badge.svg
-
-      - name: Upload badge to Gist
-        # Upload only for main branch
-        if: >
-          github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main' ||
-          github.event_name != 'workflow_run' && github.ref == 'refs/heads/main'
-        uses: andymckay/append-gist-action@ab30bf28df67017c7ad696500b218558c7c04db3
-        with:
-          token: ${{ secrets.GIST_SAVER_TOKEN }}
-          gistURL: https://gist.githubusercontent.com/${{github.actor}}/419918a15fff1a5ec74126888f73d4ae
-          file: badge.svg
+          echo with comma "${{ steps.publish-test-results.outputs.json }}"
+          echo without comma ${{ steps.publish-test-results.outputs.json }}
+          echo "content=${{ steps.publish-test-results.outputs.json }}" >> $GITHUB_OUTPUT
+          echo $content
