@@ -7,23 +7,155 @@ import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
-import org.junit.jupiter.params.provider.Arguments
-import org.junit.jupiter.params.provider.MethodSource
+import org.junit.jupiter.params.provider.CsvSource
+import org.junit.jupiter.params.provider.ValueSource
 import java.time.LocalDate
-import java.util.stream.Stream
+
+private const val BASE_COST_FOR_1JOUR = 35
+private const val BASE_COST_FOR_NIGHT = 19
 
 class CostCalculatorShould {
 
-    @ParameterizedTest
-    @MethodSource("test data")
-    fun `return cost`(expectedCost: Int, type: String, ages: List<Int>?, date: String?) {
-        val priceDateRequested = if (date != null) LocalDate.parse(date) else null
+    @Nested
+    inner class OneJourTests {
 
-        val cost = costCalculator.calculateFor(type, ages ?: emptyList(), priceDateRequested)
+        @Test
+        fun `return base cost for 1jour lift pass`() {
+            val cost = calculateFor(type = "1jour")
+            cost shouldBe BASE_COST_FOR_1JOUR
+        }
 
-        cost shouldBe expectedCost
+        @Test
+        fun `apply discount for working monday`() {
+            val cost = calculateFor(type = "1jour", priceDateRequested = "2019-03-11")
+            cost shouldBe 23
+        }
+
+        @ParameterizedTest
+        @ValueSource(strings = ["2019-03-05", "2020-03-11"])
+        fun `not apply discount for non working mondays`(date: String) {
+            val cost = calculateFor(type = "1jour", priceDateRequested = date)
+            cost shouldBe BASE_COST_FOR_1JOUR
+        }
+
+        @ParameterizedTest
+        @ValueSource(strings = ["2019-02-18", "2019-02-25", "2019-03-04"])
+        fun `not apply discount for holidays`(date: String) {
+            val cost = calculateFor(type = "1jour", priceDateRequested = date)
+            cost shouldBe BASE_COST_FOR_1JOUR
+        }
+
+        @ParameterizedTest
+        @ValueSource(ints = [3, 5])
+        fun `return 0 cost for children under 6`(age: Int) {
+            val cost = calculateFor(type = "1jour", ages = intArrayOf(age))
+            cost shouldBe 0
+        }
+
+        @ParameterizedTest
+        @ValueSource(ints = [6, 14])
+        fun `apply discount for children between 6 and 14 years old`(age: Int) {
+            val cost = calculateFor(type = "1jour", ages = intArrayOf(age))
+            cost shouldBe 25
+        }
+
+        @ParameterizedTest
+        @ValueSource(ints = [15, 30, 40, 50, 60, 64])
+        fun `not apply discount for people between 15 and 64 years old`(age: Int) {
+            val cost = calculateFor(type = "1jour", ages = intArrayOf(age))
+            cost shouldBe BASE_COST_FOR_1JOUR
+        }
+
+        @ParameterizedTest
+        @ValueSource(ints = [65, 75])
+        fun `apply discount for people over 64 years old`(age: Int) {
+            val cost = calculateFor(type = "1jour", ages = intArrayOf(age))
+            cost shouldBe 27
+        }
+
+        @Test
+        fun `apply multiple discount for working monday and age over 64 years old`() {
+            val cost = calculateFor(type = "1jour", priceDateRequested = "2019-03-11", ages = intArrayOf(65))
+            cost shouldBe 18
+        }
+
+        @ParameterizedTest
+        @CsvSource(
+            delimiter = ';', value = [
+                "25;5,6",
+                "60;6,30",
+                "62;5,30,65"
+            ]
+        )
+        fun `return cost for more than one person`(
+            expectedCost: Int,
+            ages: String
+        ) {
+            val cost = calculateFor(type = "1jour", ages = ages.toIntArraySplitBy(','))
+            cost shouldBe expectedCost
+        }
     }
+
+    @Nested
+    inner class OneNightTests {
+
+        @Test
+        fun `return base cost for 1 night lift pass`() {
+            val cost = calculateFor(type = "night")
+            cost shouldBe 0
+        }
+
+        @ParameterizedTest
+        @ValueSource(ints = [3, 5])
+        fun `return 0 cost for children under 6`(age: Int) {
+            val cost = calculateFor(type = "night", ages = intArrayOf(age))
+            cost shouldBe 0
+        }
+
+        @ParameterizedTest
+        @ValueSource(ints = [6, 30, 40, 50, 60, 64])
+        fun `not apply discount for people between 6 and 64`(age: Int) {
+            val cost = calculateFor(type = "night", ages = intArrayOf(age))
+            cost shouldBe BASE_COST_FOR_NIGHT
+        }
+
+        @ParameterizedTest
+        @ValueSource(ints = [65, 75])
+        fun `apply discount for people above 65`(age: Int) {
+            val cost = calculateFor(type = "night", ages = intArrayOf(age))
+            cost shouldBe 8
+        }
+
+        @ParameterizedTest
+        @CsvSource(
+            delimiter = ';', value = [
+                "38;6,6",
+                "19;5,30",
+                "27;5,30,65"
+            ]
+        )
+        fun `return cost for more than one person`(
+            expectedCost: Int,
+            ages: String
+        ) {
+            val cost = calculateFor(type = "night", ages = ages.toIntArraySplitBy(','))
+            cost shouldBe expectedCost
+        }
+    }
+
+    private fun calculateFor(
+        type: String,
+        priceDateRequested: String? = null,
+        vararg ages: Int,
+    ) =
+        costCalculator.calculateFor(
+            type,
+            ages.toList(),
+            if (priceDateRequested != null) LocalDate.parse(priceDateRequested) else null
+        )
 
     @BeforeEach
     fun setup() {
@@ -49,45 +181,7 @@ class CostCalculatorShould {
     }
 
     private lateinit var costCalculator: CostCalculator
-
-    companion object {
-
-        private const val BASE_COST_FOR_1JOUR = 35
-        private const val BASE_COST_FOR_NIGHT = 19
-
-        @JvmStatic
-        fun `test data`(): Stream<Arguments> =
-            Stream.of(
-                Arguments.of(35, "1jour", null, null),
-                Arguments.of(35, "1jour", null, "2019-03-04"),
-                Arguments.of(23, "1jour", null, "2019-03-11"),
-                Arguments.of(35, "1jour", null, "2020-03-11"),
-                Arguments.of(0, "1jour", listOf(3), null),
-                Arguments.of(0, "1jour", listOf(5), null),
-                Arguments.of(25, "1jour", listOf(6), null),
-                Arguments.of(25, "1jour", listOf(14), null),
-                Arguments.of(25, "1jour", listOf(14), "2019-03-11"),
-                Arguments.of(35, "1jour", listOf(15), null),
-                Arguments.of(35, "1jour", listOf(64), null),
-                Arguments.of(70, "1jour", listOf(40, 64), null),
-                Arguments.of(35, "1jour", listOf(64), "2019-03-04"),
-                Arguments.of(23, "1jour", listOf(64), "2019-03-11"),
-                Arguments.of(46, "1jour", listOf(40, 64), "2019-03-11"),
-                Arguments.of(27, "1jour", listOf(65), null),
-                Arguments.of(27, "1jour", listOf(65), "2019-03-04"),
-                Arguments.of(18, "1jour", listOf(65), "2019-03-11"),
-                Arguments.of(62, "1jour", listOf(40, 65), "2019-03-04"),
-
-                Arguments.of(0, "night", null, null),
-                Arguments.of(0, "night", listOf(5), null),
-                Arguments.of(19, "night", listOf(6), null),
-                Arguments.of(19, "night", listOf(7), null),
-                Arguments.of(19, "night", listOf(37), null),
-                Arguments.of(19, "night", listOf(64), null),
-                Arguments.of(8, "night", listOf(65), null),
-                Arguments.of(38, "night", listOf(6, 6), null),
-                Arguments.of(19, "night", listOf(5, 30), null),
-                Arguments.of(27, "night", listOf(5, 30, 65), null),
-            )
-    }
 }
+
+fun String.toIntArraySplitBy(delimiter: Char) =
+    this.split(delimiter).toTypedArray().map { it.toInt() }.toIntArray()

@@ -15,7 +15,7 @@ class CostCalculator(
         val basePrice = basePriceRepository.retrieveFor(forfaitType)
         val calendar = liftPassCalendarRepository.retrieve()
 
-        val forfait = getForfait(forfaitType, basePrice, calendar, priceDateRequested)
-        return forfait.costFor(ages)
+        return getForfait(forfaitType, basePrice, calendar, priceDateRequested)
+            .costFor(ages)
     }
 }
