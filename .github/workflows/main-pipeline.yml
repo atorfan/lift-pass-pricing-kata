@@ -43,7 +43,7 @@ jobs:
           esac
 
       - name: Create badge
-        uses: emibcn/badge-action@d6f51ff11b5c3382b3b88689ae2d6db22d9737d1
+        uses: emibcn/badge-action@808173dd03e2f30c980d03ee49e181626088eee8
         with:
           label: Tests
           status: '${{ fromJSON( needs.tests.outputs.test-results ).formatted.stats.tests }} tests, ${{ fromJSON( needs.tests.outputs.test-results ).formatted.stats.runs }} runs: ${{ fromJSON( needs.tests.outputs.test-results ).conclusion }}'
