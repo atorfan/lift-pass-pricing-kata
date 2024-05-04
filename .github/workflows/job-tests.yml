@@ -59,5 +59,4 @@ jobs:
         run: |
           echo with comma "${{ steps.publish-test-results.outputs.json }}"
           echo without comma ${{ steps.publish-test-results.outputs.json }}
-          echo "content=${{ steps.publish-test-results.outputs.json }}" >> $GITHUB_OUTPUT
-          echo $content
+          echo 'content=${{ steps.publish-test-results.outputs.json }}' >> $GITHUB_OUTPUT
