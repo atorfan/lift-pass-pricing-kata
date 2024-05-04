@@ -57,6 +57,4 @@ jobs:
       - name: Output test results
         id: test-results
         run: |
-          echo with comma "${{ steps.publish-test-results.outputs.json }}"
-          echo without comma ${{ steps.publish-test-results.outputs.json }}
           echo 'content=${{ steps.publish-test-results.outputs.json }}' >> $GITHUB_OUTPUT
