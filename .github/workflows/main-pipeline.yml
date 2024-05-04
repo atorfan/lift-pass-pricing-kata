@@ -23,10 +23,6 @@ jobs:
     name: Report status
     needs: tests
     steps:
-      - run: |
-          echo with comma "${{ needs.tests.outputs.test-results }}"
-          echo without comma ${{ needs.tests.outputs.test-results }}
-
       - name: Set badge color
         shell: bash
         run: |
