@@ -21,7 +21,7 @@ dependencies {
     implementation("org.slf4j:slf4j-simple:2.0.+")
 
     // MySQL connector
-    runtimeOnly("com.mysql:mysql-connector-j:8.3.+")
+    runtimeOnly("com.mysql:mysql-connector-j:8.4.+")
 
     // Junit 5
     val junitVersion = "5.+"
