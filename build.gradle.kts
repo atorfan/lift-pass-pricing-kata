@@ -29,7 +29,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-params:$junitVersion")
 
     // Kotest
-    val kotestVersion = "5.8.+"
+    val kotestVersion = "5.9.+"
     testImplementation("io.kotest:kotest-assertions-core:$kotestVersion")
     testImplementation("io.kotest:kotest-runner-junit5:$kotestVersion")
 
