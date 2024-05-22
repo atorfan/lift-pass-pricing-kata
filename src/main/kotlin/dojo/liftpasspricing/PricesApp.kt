@@ -1,24 +1,21 @@
 package dojo.liftpasspricing
 
-import dojo.liftpasspricing.infrastructure.getPriceRoute
-import dojo.liftpasspricing.infrastructure.putBasePriceRoute
-import spark.Filter
-import spark.Request
-import spark.Response
-import spark.Spark.*
+import dojo.liftpasspricing.infrastructure.apiRoutesConfiguration
+import io.javalin.Javalin
 
 object PricesApp {
 
+    private lateinit var app: Javalin
+
     fun start() {
-        port(4567)
-
-        get("/prices", getPriceRoute())
-        put("/prices", putBasePriceRoute())
-
-        after(Filter { _: Request?, res: Response -> res.type("application/json") })
+        app = Javalin.create { config ->
+            config.http.defaultContentType = "application/json"
+            config.router.apiBuilder(::apiRoutesConfiguration)
+        }
+            .start(4567)
     }
 
     fun shutdown() {
-        stop()
+        app.stop()
     }
 }

@@ -8,14 +8,8 @@ repositories {
 }
 
 dependencies {
-    // Spark web framework
-    implementation("org.zoomba-lang:spark-core:3.0")
-    val jettyVersion = "11.0.+"
-    implementation("org.eclipse.jetty:jetty-server:$jettyVersion")
-    implementation("org.eclipse.jetty:jetty-webapp:$jettyVersion")
-    implementation("org.eclipse.jetty:jetty-http:$jettyVersion")
-    implementation("org.eclipse.jetty:jetty-util:$jettyVersion")
-    implementation("org.eclipse.jetty:jetty-xml:$jettyVersion")
+    // Javalin - simple web framework
+    implementation("io.javalin:javalin:6.1.+")
 
     // Logger
     implementation("org.slf4j:slf4j-simple:2.0.+")
