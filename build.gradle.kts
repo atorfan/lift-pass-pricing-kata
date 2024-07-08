@@ -31,7 +31,7 @@ dependencies {
     testImplementation("io.mockk:mockk:1.13.+")
 
     // Rest-Assured
-    testImplementation("io.rest-assured:rest-assured:5.4.+")
+    testImplementation("io.rest-assured:rest-assured:5.5.+")
     // dependencies needed by Rest-Assured
     testImplementation("org.slf4j:jcl-over-slf4j:2.0.+")
     val jacksonVersion = "2.17.+"
