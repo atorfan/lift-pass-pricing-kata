@@ -40,7 +40,7 @@ dependencies {
     testImplementation("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion")
 
     // Testcontainers
-    val testContainersVersion = "1.19.+"
+    val testContainersVersion = "1.20.+"
     testImplementation("org.testcontainers:testcontainers:$testContainersVersion")
     testImplementation("org.testcontainers:junit-jupiter:$testContainersVersion")
     testImplementation("org.apache.commons:commons-compress:1.26.+")
