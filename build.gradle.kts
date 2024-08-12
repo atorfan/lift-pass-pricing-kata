@@ -43,7 +43,7 @@ dependencies {
     val testContainersVersion = "1.20.+"
     testImplementation("org.testcontainers:testcontainers:$testContainersVersion")
     testImplementation("org.testcontainers:junit-jupiter:$testContainersVersion")
-    testImplementation("org.apache.commons:commons-compress:1.26.+")
+    testImplementation("org.apache.commons:commons-compress:1.27.+")
 }
 
 tasks.withType<Test> {
