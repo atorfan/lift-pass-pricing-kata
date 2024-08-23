@@ -5,7 +5,7 @@ FROM gradle:8.5-jdk17 AS build
 WORKDIR /app
 
 # Copiar el archivo build.gradle y el directorio src al contenedor
-COPY build.gradle /app/build.gradle
+COPY build.gradle /app/build.gradle.kts
 COPY src /app/src
 
 # Ejecutar Gradle para compilar la aplicación
