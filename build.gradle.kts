@@ -52,7 +52,7 @@ tasks.withType<Test> {
 
 tasks.jar {
     manifest {
-        attributes("Main-Class" to "dojo.liftpasspricing.MainKt")
+        attributes["Main-Class"] = "dojo.liftpasspricing.MainKt"
     }
 }
 
