@@ -6,6 +6,10 @@ WORKDIR /app
 
 # Copiar el archivo build.gradle y el directorio src al contenedor
 COPY build.gradle.kts /app/build.gradle.kts
+
+# Descargar las dependencias sin construir el proyecto completo para aprovechar cacheo
+RUN gradle dependencies --no-daemon
+
 COPY src /app/src
 
 # Ejecutar Gradle para compilar la aplicación
