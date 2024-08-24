@@ -50,6 +50,12 @@ tasks.withType<Test> {
     useJUnitPlatform()
 }
 
+tasks.jar {
+    manifest {
+        attributes("Main-Class" to "dojo.liftpasspricing.MainKt")
+    }
+}
+
 kotlin { // Extension for easy setup
     jvmToolchain(17) // Target version of generated JVM bytecode. See 7️⃣
 }
