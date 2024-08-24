@@ -54,6 +54,10 @@ tasks.jar {
     manifest {
         attributes["Main-Class"] = "dojo.liftpasspricing.MainKt"
     }
+
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
 }
 
 kotlin { // Extension for easy setup
