@@ -7,6 +7,8 @@ WORKDIR /app
 # Copiar el archivo build.gradle y el directorio src al contenedor
 COPY build.gradle.kts /app/build.gradle.kts
 COPY src /app/src
+COPY docker /app/docker
+COPY database /app/database
 
 # Ejecutar Gradle para compilar la aplicación
 RUN gradle build --no-daemon
