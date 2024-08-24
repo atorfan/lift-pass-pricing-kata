@@ -21,4 +21,4 @@ WORKDIR /app
 COPY --from=build /app/build/libs/*.jar /app/app.jar
 
 # Comando para ejecutar la aplicación
-ENTRYPOINT ["java", "-jar", "/app/app.jar"]
+ENTRYPOINT ["java", "-jar", "/app/app.jar", "dojo.liftpasspricing.MainKt"]
