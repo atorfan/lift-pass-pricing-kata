@@ -52,7 +52,8 @@ tasks.withType<Test> {
 }
 
 application {
-    mainClass = "dojo.liftpasspricing.MainKt"
+    // Define la clase principal aquí
+    mainClass.set("dojo.liftpasspricing.MainKt")
 }
 
 kotlin { // Extension for easy setup
