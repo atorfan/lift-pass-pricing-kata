@@ -62,6 +62,18 @@ tasks.withType<Jar> {
     }
 }
 
+tasks.register('fatJar', Jar) {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    manifest {
+        attributes 'Main-Class': "dojo.liftpasspricing.MainKt"
+    }
+    archiveBaseName = 'Main'
+    from {
+        configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    with jar
+}
+
 kotlin { // Extension for easy setup
     jvmToolchain(17) // Target version of generated JVM bytecode. See 7️⃣
 }
