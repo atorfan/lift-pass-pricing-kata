@@ -1,4 +1,5 @@
 plugins {
+    application
     kotlin("jvm") version "2.0.+"
     id("org.jetbrains.kotlinx.kover") version "0.8.+"
 }
@@ -50,14 +51,8 @@ tasks.withType<Test> {
     useJUnitPlatform()
 }
 
-tasks.jar {
-    manifest {
-        attributes["Main-Class"] = "dojo.liftpasspricing.MainKt"
-    }
-
-    from {
-        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
-    }
+application {
+    mainClass = "dojo.liftpasspricing.MainKt"
 }
 
 kotlin { // Extension for easy setup
