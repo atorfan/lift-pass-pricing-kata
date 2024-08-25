@@ -55,6 +55,19 @@ application {
     mainClass = "dojo.liftpasspricing.MainKt"
 }
 
+tasks.jar {
+    manifest {
+        attributes["Main-Class"] = application.mainClass.get()
+        attributes["Class-Path"] = configurations.runtimeClasspath.get().files.joinToString(" ") { "libs/${it.name}" }
+    }
+
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+    from({
+        configurations.runtimeClasspath.get().filter { it.name.endsWith("jar") }.map { zipTree(it) }
+    })
+}
+
 kotlin { // Extension for easy setup
     jvmToolchain(17) // Target version of generated JVM bytecode. See 7️⃣
 }
