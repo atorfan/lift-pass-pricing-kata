@@ -68,6 +68,11 @@ tasks.jar {
     })
 }
 
+tasks.register<Copy>("copyLibs") {
+    from(configurations.runtimeClasspath.get())
+    into("$buildDir/libs")
+}
+
 kotlin { // Extension for easy setup
     jvmToolchain(17) // Target version of generated JVM bytecode. See 7️⃣
 }
