@@ -1,5 +1,4 @@
 plugins {
-    application
     kotlin("jvm") version "2.0.+"
     id("org.jetbrains.kotlinx.kover") version "0.8.+"
 }
@@ -51,23 +50,12 @@ tasks.withType<Test> {
     useJUnitPlatform()
 }
 
-application {
-    // Define la clase principal aquí
-    mainClass.set("dojo.liftpasspricing.MainKt")
-}
-
-tasks.withType<Jar> {
+tasks.register("fatJar", Jar) {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     manifest {
         attributes["Main-Class"] = "dojo.liftpasspricing.MainKt"
     }
-}
-
-tasks.register('fatJar', Jar) {
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    manifest {
-        attributes 'Main-Class': "dojo.liftpasspricing.MainKt"
-    }
-    archiveBaseName = 'Main'
+    archiveBaseName = "Main"
     from {
         configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) }
     }
