@@ -73,6 +73,14 @@ tasks.register<Copy>("copyLibs") {
     into("$buildDir/libs")
 }
 
+tasks.named("jar") {
+    dependsOn("copyLibs")
+}
+
+tasks.named("startScripts") {
+    dependsOn("copyLibs")
+}
+
 kotlin { // Extension for easy setup
     jvmToolchain(17) // Target version of generated JVM bytecode. See 7️⃣
 }
