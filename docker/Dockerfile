@@ -9,7 +9,7 @@ COPY build.gradle.kts /app/build.gradle.kts
 COPY src /app/src
 
 # Ejecutar Gradle para compilar la aplicación
-RUN gradle build --no-daemon -x test
+RUN gradle build copyLibs --no-daemon -x test
 
 # Establecer la imagen base de JDK 17 para ejecutar la aplicación
 FROM eclipse-temurin:17-jdk AS runtime
