@@ -1,8 +1,6 @@
-import org.gradle.jvm.tasks.Jar
-
 plugins {
     kotlin("jvm") version "2.0.+"
-    id("application")
+    application
     id("org.jetbrains.kotlinx.kover") version "0.8.+"
 }
 
@@ -54,13 +52,7 @@ tasks.withType<Test> {
 }
 
 application {
-    mainClass.set("dojo.liftpasspricing.MainKt")
-}
-
-tasks.withType<Jar> {
-    manifest {
-        attributes["Main-Class"] = "dojo.liftpasspricing.MainKt"
-    }
+    mainClass = "dojo.liftpasspricing.MainKt"
 }
 
 kotlin { // Extension for easy setup
