@@ -1,7 +1,29 @@
 plugins {
-    kotlin("jvm") version "2.0.+"
     application
+    kotlin("jvm") version "2.0.+"
     id("org.jetbrains.kotlinx.kover") version "0.8.+"
+}
+
+application {
+    mainClass = "dojo.liftpasspricing.MainKt"
+}
+
+tasks.register<Jar>("fatJar") {
+    archiveClassifier = "all"
+
+    manifest {
+        attributes["Main-Class"] = application.mainClass
+    }
+
+    from(sourceSets.main.get().output)
+
+    dependsOn(configurations.runtimeClasspath)
+
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+    from({
+        configurations.runtimeClasspath.get().filter { it.name.endsWith("jar") }.map { zipTree(it) }
+    })
 }
 
 repositories {
@@ -49,36 +71,6 @@ dependencies {
 
 tasks.withType<Test> {
     useJUnitPlatform()
-}
-
-application {
-    mainClass = "dojo.liftpasspricing.MainKt"
-}
-
-tasks.jar {
-    manifest {
-        attributes["Main-Class"] = application.mainClass.get()
-        attributes["Class-Path"] = configurations.runtimeClasspath.get().files.joinToString(" ") { "libs/${it.name}" }
-    }
-
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-
-    from({
-        configurations.runtimeClasspath.get().filter { it.name.endsWith("jar") }.map { zipTree(it) }
-    })
-}
-
-tasks.register<Copy>("copyLibs") {
-    from(configurations.runtimeClasspath.get())
-    into("$buildDir/libs")
-}
-
-tasks.named("jar") {
-    dependsOn("copyLibs")
-}
-
-tasks.named("startScripts") {
-    dependsOn("copyLibs")
 }
 
 kotlin { // Extension for easy setup

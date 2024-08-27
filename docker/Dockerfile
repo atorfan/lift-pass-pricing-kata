@@ -9,7 +9,7 @@ COPY build.gradle.kts /app/build.gradle.kts
 COPY src /app/src
 
 # Ejecutar Gradle para compilar la aplicación
-RUN gradle build copyLibs --no-daemon -x test
+RUN gradle build --no-daemon -x test fatJar
 
 # Establecer la imagen base de JDK 17 para ejecutar la aplicación
 FROM eclipse-temurin:17-jdk AS runtime
@@ -18,7 +18,7 @@ FROM eclipse-temurin:17-jdk AS runtime
 WORKDIR /app
 
 # Copiar el archivo JAR construido desde la etapa anterior
-COPY --from=build /app/build/libs/*.jar /app/app.jar
+COPY --from=build /app/build/libs/*-all.jar /app/app.jar
 
 # Comando para ejecutar la aplicación
 ENTRYPOINT ["java", "-jar", "/app/app.jar"]
