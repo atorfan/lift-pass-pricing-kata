@@ -36,13 +36,13 @@ class BasePriceRepositoryWithSqlDatabaseShould {
     }
 
     private fun selectBasePriceFor(type: String) = queryFromDatabase(
-        "SELECT cost FROM lift_pass.base_price WHERE type = ?",
+        "SELECT cost FROM base_price WHERE type = ?",
         { pStmt -> pStmt.setString(1, type) },
         { resultSet -> resultSet.next(); resultSet.getInt(1) }
     )
 
     private fun upsert(expected: Map<String, Int>) =
-        upsertDatabase("INSERT IGNORE INTO lift_pass.base_price (type, cost) VALUES (?, ?)")
+        upsertDatabase("INSERT INTO base_price (type, cost) VALUES (?, ?) ON CONFLICT DO NOTHING")
         { pStmt ->
             expected.forEach { costToType ->
                 pStmt.setString(1, costToType.key)
@@ -63,7 +63,7 @@ class BasePriceRepositoryWithSqlDatabaseShould {
         @Container
         @SuppressWarnings("unused")
         val environment = ComposeContainer(File("./docker/docker-compose.yml"))
-            .waitingFor("db-1", Wait.forHealthcheck())
+            .waitingFor("postgres-1", Wait.forHealthcheck())
             .withLocalCompose(true)
     }
 }

@@ -31,7 +31,7 @@ class LiftPassCalendarRepositoryWithSqlDatabaseShould {
     }
 
     private fun upsert(expected: List<LocalDate>) =
-        upsertDatabase("INSERT IGNORE INTO lift_pass.holidays (holiday, description) VALUES (?, 'extra holiday')")
+        upsertDatabase("INSERT INTO holidays (holiday, description) VALUES (?, 'extra holiday') ON CONFLICT DO NOTHING")
         { pStmt ->
             expected.forEach { date ->
                 pStmt.setDate(1, Date.valueOf(date))
@@ -44,7 +44,7 @@ class LiftPassCalendarRepositoryWithSqlDatabaseShould {
         @Container
         @SuppressWarnings("unused")
         val environment = ComposeContainer(File("./docker/docker-compose.yml"))
-            .waitingFor("db-1", Wait.forHealthcheck())
+            .waitingFor("postgres-1", Wait.forHealthcheck())
             .withLocalCompose(true)
     }
 }

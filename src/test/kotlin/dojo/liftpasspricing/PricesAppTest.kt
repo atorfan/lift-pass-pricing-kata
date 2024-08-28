@@ -83,7 +83,7 @@ class PricesAppTest {
         @Container
         @SuppressWarnings("unused")
         val environment = ComposeContainer(File("./docker/docker-compose.yml"))
-            .waitingFor("db-1", Wait.forHealthcheck())
+            .waitingFor("postgres-1", Wait.forHealthcheck())
             .withLocalCompose(true)
 
         @JvmStatic

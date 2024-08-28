@@ -39,6 +39,8 @@ dependencies {
 
     // MySQL connector
     runtimeOnly("com.mysql:mysql-connector-j:9.0.+")
+    // PostgreSQL connector
+    runtimeOnly("org.postgresql:postgresql:42.7.+")
 
     // Junit 5
     val junitVersion = "5.+"

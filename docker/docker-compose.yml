@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  db:
+  mariadb:
     image: mariadb:latest
     environment:
       MYSQL_ROOT_USER: root
@@ -9,8 +9,8 @@ services:
       MYSQL_USER: liftpassadmin
       MYSQL_PASSWORD: l1ftp4ss4dm1n
     volumes:
-      - data:/var/lib/mysql
-      - ../database:/docker-entrypoint-initdb.d
+      - mariadb-data:/var/lib/mysql
+      - ../database/mariadb:/docker-entrypoint-initdb.d
     ports:
       - "3306:3306"
     healthcheck:
@@ -19,5 +19,24 @@ services:
       retries: 3
       timeout: 30s
 
+  postgres:
+    image: postgres:latest
+    shm_size: 128mb
+    environment:
+      POSTGRES_DB: lift_pass
+      POSTGRES_USER: liftpassadmin
+      POSTGRES_PASSWORD: l1ftp4ss4dm1n
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ../database/postgres:/docker-entrypoint-initdb.d
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready", "-d", "db_prod"]
+      interval: 5s
+      retries: 3
+      timeout: 30s
+
 volumes:
-  data:
+  mariadb-data:
+  postgres-data:

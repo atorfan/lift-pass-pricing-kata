@@ -11,7 +11,7 @@ import java.sql.SQLException
 // TODO user & password from environment variables
 
 fun obtainDatabaseConnection(): Connection =
-    DriverManager.getConnection("jdbc:mysql://localhost:3306/lift_pass", "root", "mysql")
+    DriverManager.getConnection("jdbc:postgresql://localhost:5432/lift_pass", "liftpassadmin", "l1ftp4ss4dm1n")
         .also {
             closeOnShutdown(it)
         }

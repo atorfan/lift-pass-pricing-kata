@@ -12,11 +12,10 @@ class BasePriceRepositoryWithSqlDatabase : BasePriceRepository {
         )
 
     override fun storeFor(liftPassType: String, liftPassCost: Int) {
-        upsertDatabase("INSERT INTO base_price (type, cost) VALUES (?, ?) ON DUPLICATE KEY UPDATE cost = ?")
+        upsertDatabase("INSERT INTO base_price (type, cost) VALUES (?, ?) ON CONFLICT (type) DO UPDATE SET cost = EXCLUDED.cost")
         { stmt ->
             stmt.setString(1, liftPassType)
             stmt.setInt(2, liftPassCost)
-            stmt.setInt(3, liftPassCost)
             stmt.execute()
         }
     }
