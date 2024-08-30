@@ -43,7 +43,7 @@ class LiftPassCalendarRepositoryWithSqlDatabaseShould {
 
         @Container
         @SuppressWarnings("unused")
-        val environment = ComposeContainer(File("./docker/docker-compose.yml"))
+        val environment = ComposeContainer(File("./docker/infra-docker-compose.yml"))
             .waitingFor("postgres-1", Wait.forHealthcheck())
             .withLocalCompose(true)
     }

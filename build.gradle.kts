@@ -37,10 +37,8 @@ dependencies {
     // Logger
     implementation("org.slf4j:slf4j-simple:2.0.+")
 
-    // MySQL connector
-    runtimeOnly("com.mysql:mysql-connector-j:9.0.+")
     // PostgreSQL connector
-    runtimeOnly("org.postgresql:postgresql:42.7.+")
+    implementation("org.postgresql:postgresql:42.7.+")
 
     // Junit 5
     val junitVersion = "5.+"

@@ -1,0 +1,17 @@
+version: '3.8'
+
+include:
+  - infra-docker-compose.yml
+
+services:
+  lift-pass-pricing:
+    image: lift-pass-pricing
+    container_name: lift-pass-pricing
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile
+    ports:
+      - "4567:4567"
+    depends_on:
+      postgres:
+        condition: service_healthy

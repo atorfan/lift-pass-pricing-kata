@@ -20,5 +20,7 @@ WORKDIR /app
 # Copiar el archivo JAR construido desde la etapa anterior
 COPY --from=build /app/build/libs/*-all.jar /app/app.jar
 
+EXPOSE 4567
+
 # Comando para ejecutar la aplicación
 ENTRYPOINT ["java", "-jar", "/app/app.jar"]

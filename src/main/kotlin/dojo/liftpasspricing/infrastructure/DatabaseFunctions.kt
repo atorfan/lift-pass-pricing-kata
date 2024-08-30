@@ -11,7 +11,7 @@ import java.sql.SQLException
 // TODO user & password from environment variables
 
 fun obtainDatabaseConnection(): Connection =
-    DriverManager.getConnection("jdbc:postgresql://localhost:5432/lift_pass", "liftpassadmin", "l1ftp4ss4dm1n")
+    DriverManager.getConnection("jdbc:postgresql://docker-postgres-1:5432/lift_pass", "admin", "pass")
         .also {
             closeOnShutdown(it)
         }
