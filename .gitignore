@@ -10,3 +10,5 @@
 ### ...but keep codestyle files 🤩 ###
 !.idea/
 !.idea/codeStyles
+
+.env
