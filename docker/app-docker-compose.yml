@@ -10,8 +10,10 @@ services:
     build:
       context: ../
       dockerfile: docker/Dockerfile
+    env_file:
+      - ../.env
     ports:
       - "4567:4567"
     depends_on:
-      postgres:
+      postgres-database:
         condition: service_healthy

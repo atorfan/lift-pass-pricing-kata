@@ -8,10 +8,14 @@ import java.sql.ResultSet
 import java.sql.SQLException
 
 // TODO use a connection pool solution
-// TODO user & password from environment variables
+
+val databaseHost = EnvironmentVariables.lookup("DATABASE_HOST")
+val databasePort = EnvironmentVariables.lookup("DATABASE_PORT")
+val databaseUser = EnvironmentVariables.lookup("DATABASE_USER")
+val databasePass = EnvironmentVariables.lookup("DATABASE_PASS")
 
 fun obtainDatabaseConnection(): Connection =
-    DriverManager.getConnection("jdbc:postgresql://docker-postgres-1:5432/lift_pass", "admin", "pass")
+    DriverManager.getConnection("jdbc:postgresql://$databaseHost:$databasePort/lift_pass", databaseUser, databasePass)
         .also {
             closeOnShutdown(it)
         }

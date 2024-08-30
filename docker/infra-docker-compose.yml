@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  postgres:
+  postgres-database:
     image: postgres:latest
     shm_size: 128mb
     environment:
