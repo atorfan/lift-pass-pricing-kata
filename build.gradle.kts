@@ -57,7 +57,7 @@ dependencies {
     testImplementation("io.rest-assured:rest-assured:5.5.+")
     // dependencies needed by Rest-Assured
     testImplementation("org.slf4j:jcl-over-slf4j:2.0.+")
-    val jacksonVersion = "2.17.+"
+    val jacksonVersion = "2.18.+"
     testImplementation("com.fasterxml.jackson.core:jackson-core:$jacksonVersion")
     testImplementation("com.fasterxml.jackson.core:jackson-databind:$jacksonVersion")
     testImplementation("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion")
