@@ -32,7 +32,7 @@ repositories {
 
 dependencies {
     // Javalin - simple web framework
-    implementation("io.javalin:javalin:6.3.+")
+    implementation("io.javalin:javalin:6.4.+")
 
     // Logger
     implementation("org.slf4j:slf4j-simple:2.0.+")
