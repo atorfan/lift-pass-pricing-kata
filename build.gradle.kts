@@ -41,7 +41,7 @@ dependencies {
     implementation("org.postgresql:postgresql:42.7.+")
 
     // Junit 5
-    val junitVersion = "5.+"
+    val junitVersion = "6.+"
     testImplementation("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
     testImplementation("org.junit.jupiter:junit-jupiter-params:$junitVersion")
 
