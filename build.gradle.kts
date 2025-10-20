@@ -1,7 +1,7 @@
 plugins {
     application
     kotlin("jvm") version "2.0.+"
-    id("org.jetbrains.kotlinx.kover") version "0.8.+"
+    id("org.jetbrains.kotlinx.kover") version "0.9.+"
 }
 
 application {
